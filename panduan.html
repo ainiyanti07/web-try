@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Bisnis — BisnisNet</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── PANDUAN LAYOUT ── */
+.panduan-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Sticky sidebar nav */
+.panduan-nav {
+  position: sticky; top: 86px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.panduan-nav-header {
+  padding: 1.2rem 1.4rem;
+  background: var(--navy); color: var(--white);
+  font-size: .72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+}
+.panduan-nav-list { padding: .6rem; }
+.panduan-nav-item {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .65rem .8rem; border-radius: var(--r-sm);
+  cursor: pointer; transition: background var(--t) var(--ease), color var(--t) var(--ease);
+  font-size: .865rem; color: var(--text-soft); font-weight: 500;
+}
+.panduan-nav-item:hover { background: var(--cream); color: var(--text-dark); }
+.panduan-nav-item.active { background: var(--gold-pale); color: var(--gold-dim); font-weight: 600; }
+.panduan-nav-dot {
+  width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--border-mid);
+  flex-shrink: 0; transition: border-color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.panduan-nav-item.active .panduan-nav-dot { background: var(--gold); border-color: var(--gold); }
+.panduan-nav-item.done .panduan-nav-dot { background: #1E8060; border-color: #1E8060; }
+.panduan-nav-divider { height: 1px; background: var(--border); margin: .4rem .6rem; }
+
+/* Progress bar */
+.progress-wrap { padding: 1rem 1.4rem; border-top: 1px solid var(--border); }
+.progress-label { display: flex; justify-content: space-between; font-size: .75rem; color: var(--text-muted); margin-bottom: .5rem; }
+.progress-track { height: 5px; background: var(--off); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%); border-radius: 99px; transition: width .6s var(--ease); }
+
+/* ── PANDUAN STEPS ── */
+.panduan-step {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); margin-bottom: 1.5rem;
+  overflow: hidden; box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--t) var(--ease);
+}
+.panduan-step:hover { box-shadow: var(--shadow-md); }
+.panduan-step.open { box-shadow: var(--shadow-lg); border-color: transparent; }
+
+.step-header {
+  display: flex; align-items: center; gap: 1.2rem;
+  padding: 1.6rem 1.8rem; cursor: pointer;
+  transition: background var(--t) var(--ease);
+  -webkit-user-select: none; user-select: none;
+}
+.step-header:hover { background: var(--cream); }
+.step-num {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700;
+  flex-shrink: 0;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+.step-num.todo   { background: var(--off); color: var(--text-muted); border: 2px solid var(--border); }
+.step-num.active { background: var(--gold-pale); color: var(--gold-dim); border: 2px solid var(--gold); }
+.step-num.done   { background: #EAF6F1; color: #1E8060; border: 2px solid #1E8060; }
+
+.step-info { flex: 1; }
+.step-tag { font-size: .68rem; font-weight: 600; letter-spacing: .7px; text-transform: uppercase; color: var(--text-muted); margin-bottom: .2rem; }
+.step-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.25; }
+.step-subtitle { font-size: .82rem; color: var(--text-soft); margin-top: .2rem; }
+
+.step-chevron {
+  width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: var(--off); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: transform var(--t) var(--ease), background var(--t) var(--ease);
+}
+.panduan-step.open .step-chevron { transform: rotate(180deg); background: var(--navy); }
+.panduan-step.open .step-chevron svg { stroke: white; }
+
+.step-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height .45s var(--ease), opacity .35s var(--ease);
+  opacity: 0;
+}
+.panduan-step.open .step-body { max-height: 2000px; opacity: 1; }
+.step-body-inner { padding: 0 1.8rem 2rem; border-top: 1px solid var(--border); }
+
+/* Sub-steps */
+.sub-steps { display: flex; flex-direction: column; gap: .75rem; margin: 1.5rem 0; }
+.sub-step {
+  display: flex; align-items: flex-start; gap: .9rem;
+  padding: 1.1rem 1.2rem; border-radius: var(--r-md);
+  background: var(--cream); border: 1px solid var(--border);
+  transition: border-color var(--t) var(--ease), background var(--t) var(--ease);
+  cursor: pointer;
+}
+.sub-step:hover { background: var(--white); border-color: var(--border-mid); }
+.sub-step.completed { background: #EAF6F1; border-color: #A8DFD0; }
+.sub-icon {
+  width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border-mid);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all var(--t) var(--ease); margin-top: .05rem;
+}
+.sub-step.completed .sub-icon { background: #1E8060; border-color: #1E8060; }
+.sub-step.completed .sub-icon svg { stroke: white; }
+.sub-content {}
+.sub-title { font-size: .9rem; font-weight: 600; color: var(--text-dark); margin-bottom: .2rem; }
+.sub-desc  { font-size: .82rem; color: var(--text-soft); line-height: 1.55; }
+
+/* Checklist */
+.checklist { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin: 1.2rem 0; }
+.check-item {
+  display: flex; align-items: flex-start; gap: .6rem;
+  font-size: .85rem; color: var(--text-mid); padding: .5rem; cursor: pointer;
+}
+.check-box {
+  width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border-mid);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: .05rem;
+  transition: all var(--t) var(--ease);
+}
+.check-item.checked .check-box { background: var(--gold); border-color: var(--gold); }
+.check-item.checked .check-box::after { content: ''; width: 5px; height: 8px; border: 2px solid white; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px,-1px); display: block; }
+.check-item.checked > span { text-decoration: line-through; color: var(--text-muted); }
+
+.step-note {
+  background: var(--gold-pale); border-left: 3px solid var(--gold);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: .9rem 1.1rem; font-size: .85rem; color: var(--gold-dim); line-height: 1.6; margin-top: 1rem;
+}
+.step-note strong { font-weight: 600; }
+
+.step-actions { display: flex; gap: .75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+.step-mark-done {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .83rem; font-weight: 600; padding: .55rem 1.1rem;
+  border-radius: var(--r-sm); border: 1.5px solid #1E8060;
+  color: #1E8060; background: transparent; cursor: pointer;
+  transition: all var(--t) var(--ease);
+}
+.step-mark-done:hover { background: #EAF6F1; }
+
+/* ── QUICK START ── */
+.quick-start {
+  background: var(--navy); border-radius: var(--r-xl); padding: 2.5rem;
+  margin-bottom: 2.5rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+}
+.qs-label { font-size: .7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gold-light); margin-bottom: .5rem; }
+.qs-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--white); margin-bottom: .5rem; line-height: 1.3; }
+.qs-desc { font-size: .875rem; color: rgba(255,255,255,.5); line-height: 1.65; }
+.qs-action { flex-shrink: 0; text-align: center; }
+.qs-pct { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700; color: var(--gold); line-height: 1; }
+.qs-pct-label { font-size: .72rem; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .6px; margin-top: .3rem; }
+
+@media (max-width: 900px) {
+  .panduan-layout { grid-template-columns: 1fr; }
+  .panduan-nav { position: static; }
+  .quick-start { grid-template-columns: 1fr; }
+  .qs-action { text-align: left; }
+  .checklist { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-mark"><svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      BisnisNet
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="artikel.html">Jurnal Artikel</a></li>
+      <li><a href="testimoni.html">Testimoni</a></li>
+      <li><a href="panduan.html">Panduan Bisnis</a></li>
+      <a href="panduan.html" class="nav-cta">Mulai Sekarang</a>
+    </ul>
+    <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <span class="t-label">Panduan Bisnis</span>
+  <h1>Dari Ide Menjadi Bisnis <em>Nyata & Berkembang</em></h1>
+  <p>Panduan langkah demi langkah yang telah membantu lebih dari 2.400 wirausahawan Indonesia memulai dan mengembangkan bisnis mereka.</p>
+</div>
+
+<section class="section-sm">
+  <div class="container">
+
+    <div class="panduan-layout">
+
+      <!-- ── SIDEBAR NAV ── -->
+      <div class="panduan-nav reveal">
+        <div class="panduan-nav-header">Progres Panduan</div>
+        <div class="panduan-nav-list">
+          <div class="panduan-nav-item done" onclick="openStep(0)">
+            <span class="panduan-nav-dot"></span> Validasi Ide
+          </div>
+          <div class="panduan-nav-item active" onclick="openStep(1)">
+            <span class="panduan-nav-dot"></span> Rencana Bisnis
+          </div>
+          <div class="panduan-nav-divider"></div>
+          <div class="panduan-nav-item" onclick="openStep(2)">
+            <span class="panduan-nav-dot"></span> Legalitas & Perizinan
+          </div>
+          <div class="panduan-nav-item" onclick="openStep(3)">
+            <span class="panduan-nav-dot"></span> Keuangan & Modal
+          </div>
+          <div class="panduan-nav-divider"></div>
+          <div class="panduan-nav-item" onclick="openStep(4)">
+            <span class="panduan-nav-dot"></span> Operasional & SDM
+          </div>
+          <div class="panduan-nav-item" onclick="openStep(5)">
+            <span class="panduan-nav-dot"></span> Pemasaran & Penjualan
+          </div>
+          <div class="panduan-nav-divider"></div>
+          <div class="panduan-nav-item" onclick="openStep(6)">
+            <span class="panduan-nav-dot"></span> Skalabilitas
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-label"><span>Progres Anda</span><span id="pct-lbl">14%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:14%"></div></div>
+        </div>
+      </div>
+
+      <!-- ── MAIN ── -->
+      <div>
+
+        <!-- Quick start -->
+        <div class="quick-start reveal">
+          <div>
+            <div class="qs-label">Anda Sedang Mengerjakan</div>
+            <div class="qs-title">Modul 2 — Menyusun Rencana Bisnis yang Solid</div>
+            <div class="qs-desc">Pelajari cara membuat business plan yang meyakinkan investor dan menjadi kompas operasional bisnis Anda sehari-hari.</div>
+          </div>
+          <div class="qs-action">
+            <div class="qs-pct" data-count="14" data-suffix="%">0%</div>
+            <div class="qs-pct-label">Selesai</div>
+          </div>
+        </div>
+
+        <!-- Step 1: Validasi Ide -->
+        <div class="panduan-step reveal" id="step-0">
+          <div class="step-header" onclick="toggleStep(0)">
+            <div class="step-num done">✓</div>
+            <div class="step-info">
+              <div class="step-tag">Modul 1 · Selesai</div>
+              <div class="step-title">Validasi Ide Bisnis</div>
+              <div class="step-subtitle">Pastikan ada pasar nyata sebelum investasi besar</div>
+            </div>
+            <div class="step-chevron">
+              <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="step-body">
+            <div class="step-body-inner">
+              <div class="sub-steps">
+                <div class="sub-step completed">
+                  <div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                  <div class="sub-content"><div class="sub-title">Riset pasar & identifikasi masalah</div><div class="sub-desc">Lakukan 20 wawancara mendalam dengan calon pelanggan. Cari masalah nyata yang mau mereka bayarkan solusinya.</div></div>
+                </div>
+                <div class="sub-step completed">
+                  <div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                  <div class="sub-content"><div class="sub-title">Analisis kompetitor</div><div class="sub-desc">Pelajari siapa pesaing langsung dan tidak langsung. Temukan celah yang bisa Anda isi lebih baik.</div></div>
+                </div>
+                <div class="sub-step completed">
+                  <div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                  <div class="sub-content"><div class="sub-title">Uji MVP (Minimum Viable Product)</div><div class="sub-desc">Buat versi paling sederhana dari produk/jasa Anda dan dapatkan 10 pelanggan pertama yang mau membayar.</div></div>
+                </div>
+              </div>
+              <div class="step-note"><strong>✅ Modul ini telah selesai!</strong> Anda sudah berhasil memvalidasi ide bisnis. Lanjutkan ke Modul 2 untuk menyusun rencana bisnis yang solid.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Rencana Bisnis -->
+        <div class="panduan-step open reveal delay-1" id="step-1">
+          <div class="step-header" onclick="toggleStep(1)">
+            <div class="step-num active">2</div>
+            <div class="step-info">
+              <div class="step-tag">Modul 2 · Sedang Berjalan</div>
+              <div class="step-title">Menyusun Rencana Bisnis</div>
+              <div class="step-subtitle">Business plan yang jelas adalah kompas bisnis Anda</div>
+            </div>
+            <div class="step-chevron">
+              <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="step-body">
+            <div class="step-body-inner">
+              <div class="sub-steps">
+                <div class="sub-step">
+                  <div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                  <div class="sub-content"><div class="sub-title">Business Model Canvas (BMC)</div><div class="sub-desc">Petakan 9 elemen kunci bisnis Anda: value proposition, segmen pelanggan, saluran distribusi, hubungan pelanggan, sumber pendapatan, sumber daya, aktivitas, mitra, dan struktur biaya.</div></div>
+                </div>
+                <div class="sub-step">
+                  <div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                  <div class="sub-content"><div class="sub-title">Proyeksi keuangan 3 tahun</div><div class="sub-desc">Buat estimasi pendapatan, biaya operasional, dan titik BEP (break-even point). Gunakan skenario optimis, realistis, dan pesimis.</div></div>
+                </div>
+                <div class="sub-step">
+                  <div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+                  <div class="sub-content"><div class="sub-title">Strategi go-to-market</div><div class="sub-desc">Tentukan bagaimana Anda akan menjangkau pelanggan pertama dan strategi akuisisi yang skalabel.</div></div>
+                </div>
+              </div>
+
+              <div style="font-size:.8rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);margin-bottom:.8rem;">Checklist Rencana Bisnis</div>
+              <div class="checklist" id="checklist-2">
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Executive summary ditulis</span></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>BMC lengkap diisi</span></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Analisis SWOT selesai</span></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Proyeksi keuangan dibuat</span></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Strategi pemasaran ditentukan</span></div>
+                <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Rencana operasional disusun</span></div>
+              </div>
+
+              <div class="step-note"><strong>💡 Tips:</strong> Rencana bisnis yang baik bukan soal panjangnya, tapi kejelasan dan realisme asumsinya. Satu halaman BMC sering lebih berguna dari dokumen 50 halaman.</div>
+              <div class="step-actions">
+                <button class="step-mark-done" onclick="markDone(1)">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+                  Tandai Selesai
+                </button>
+                <a href="artikel.html" class="btn btn-outline" style="font-size:.83rem;padding:.5rem 1rem;">Baca Artikel Terkait</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Legalitas -->
+        <div class="panduan-step reveal" id="step-2">
+          <div class="step-header" onclick="toggleStep(2)">
+            <div class="step-num todo">3</div>
+            <div class="step-info">
+              <div class="step-tag">Modul 3 · Belum Dimulai</div>
+              <div class="step-title">Legalitas & Perizinan</div>
+              <div class="step-subtitle">Pondasi hukum yang kokoh untuk bisnis jangka panjang</div>
+            </div>
+            <div class="step-chevron"><svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+          </div>
+          <div class="step-body">
+            <div class="step-body-inner">
+              <div class="sub-steps">
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Pilih bentuk badan usaha</div><div class="sub-desc">UD, CV, atau PT — setiap bentuk memiliki implikasi hukum, pajak, dan operasional yang berbeda. Pilih sesuai skala dan tujuan bisnis.</div></div></div>
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Daftarkan NIB via OSS</div><div class="sub-desc">Nomor Induk Berusaha (NIB) sekarang bisa didaftarkan sendiri melalui sistem OSS (Online Single Submission) tanpa biaya.</div></div></div>
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Daftarkan merek di DJKI</div><div class="sub-desc">Lindungi nama dan logo bisnis Anda melalui pendaftaran merek di Direktorat Jenderal Kekayaan Intelektual sebelum ada yang mendahuluinya.</div></div></div>
+              </div>
+              <div class="step-actions">
+                <button class="step-mark-done" onclick="markDone(2)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Tandai Selesai</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Keuangan -->
+        <div class="panduan-step reveal" id="step-3">
+          <div class="step-header" onclick="toggleStep(3)">
+            <div class="step-num todo">4</div>
+            <div class="step-info">
+              <div class="step-tag">Modul 4 · Belum Dimulai</div>
+              <div class="step-title">Keuangan & Modal</div>
+              <div class="step-subtitle">Kelola arus kas dan temukan sumber pendanaan yang tepat</div>
+            </div>
+            <div class="step-chevron"><svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+          </div>
+          <div class="step-body">
+            <div class="step-body-inner">
+              <div class="sub-steps">
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Pisahkan keuangan pribadi & bisnis</div><div class="sub-desc">Buka rekening bisnis terpisah dan gunakan software akuntansi (Jurnal.id, Accurate, atau QuickBooks) dari hari pertama.</div></div></div>
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Hitung kebutuhan modal awal</div><div class="sub-desc">Siapkan dana minimal untuk 6 bulan operasional + biaya setup. Jangan bergantung pada 1 sumber pendanaan saja.</div></div></div>
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Eksplorasi sumber pendanaan</div><div class="sub-desc">KUR BRI/BNI, program inkubator, angel investor, crowdfunding (Kitabisa, Bizhare) — setiap opsi punya kelebihan dan syarat berbeda.</div></div></div>
+              </div>
+              <div class="step-actions">
+                <button class="step-mark-done" onclick="markDone(3)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Tandai Selesai</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Operasional -->
+        <div class="panduan-step reveal" id="step-4">
+          <div class="step-header" onclick="toggleStep(4)">
+            <div class="step-num todo">5</div>
+            <div class="step-info">
+              <div class="step-tag">Modul 5 · Belum Dimulai</div>
+              <div class="step-title">Operasional & SDM</div>
+              <div class="step-subtitle">Bangun sistem yang berjalan tanpa Anda harus ada setiap saat</div>
+            </div>
+            <div class="step-chevron"><svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+          </div>
+          <div class="step-body">
+            <div class="step-body-inner">
+              <div class="sub-steps">
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Buat SOP untuk setiap proses utama</div><div class="sub-desc">Dokumentasikan alur kerja penjualan, produksi, pengiriman, dan layanan pelanggan dalam SOP yang bisa diikuti siapapun.</div></div></div>
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Rekrut & kelola tim</div><div class="sub-desc">Tentukan peran pertama yang perlu diisi, proses wawancara, sistem kompensasi, dan penilaian kinerja yang adil.</div></div></div>
+              </div>
+              <div class="step-actions"><button class="step-mark-done" onclick="markDone(4)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Tandai Selesai</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: Pemasaran -->
+        <div class="panduan-step reveal" id="step-5">
+          <div class="step-header" onclick="toggleStep(5)">
+            <div class="step-num todo">6</div>
+            <div class="step-info">
+              <div class="step-tag">Modul 6 · Belum Dimulai</div>
+              <div class="step-title">Pemasaran & Penjualan</div>
+              <div class="step-subtitle">Jangkau pelanggan yang tepat dengan pesan yang tepat</div>
+            </div>
+            <div class="step-chevron"><svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+          </div>
+          <div class="step-body">
+            <div class="step-body-inner">
+              <div class="sub-steps">
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Bangun identitas merek yang kuat</div><div class="sub-desc">Logo, palet warna, tone of voice, dan positioning yang membedakan bisnis Anda dari kompetitor.</div></div></div>
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Pilih dan kuasai 1-2 saluran pemasaran</div><div class="sub-desc">Fokus lebih baik dari tersebar. Kuasai Instagram atau TikTok dahulu sebelum ekspansi ke saluran lain.</div></div></div>
+              </div>
+              <div class="step-actions"><button class="step-mark-done" onclick="markDone(5)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Tandai Selesai</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 7: Skalabilitas -->
+        <div class="panduan-step reveal" id="step-6">
+          <div class="step-header" onclick="toggleStep(6)">
+            <div class="step-num todo">7</div>
+            <div class="step-info">
+              <div class="step-tag">Modul 7 · Belum Dimulai</div>
+              <div class="step-title">Skalabilitas & Ekspansi</div>
+              <div class="step-subtitle">Tumbuh dengan terencana tanpa kehilangan kualitas</div>
+            </div>
+            <div class="step-chevron"><svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+          </div>
+          <div class="step-body">
+            <div class="step-body-inner">
+              <div class="sub-steps">
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Identifikasi bottleneck pertumbuhan</div><div class="sub-desc">Apa yang menghambat Anda melayani 10x lebih banyak pelanggan? Sistem, SDM, modal, atau teknologi?</div></div></div>
+                <div class="sub-step"><div class="sub-icon"><svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sub-content"><div class="sub-title">Evaluasi model franchise atau lisensi</div><div class="sub-desc">Jika bisnis Anda sudah proven, pertimbangkan ekspansi melalui franchise, mitra, atau lisensi merek.</div></div></div>
+              </div>
+              <div class="step-actions"><button class="step-mark-done" onclick="markDone(6)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Tandai Selesai</button></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /main -->
+    </div><!-- /layout -->
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo"><div class="nav-logo-mark"><svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>BisnisNet</a>
+      <p>Platform edukasi bisnis dan keuangan untuk wirausahawan Indonesia yang ingin tumbuh dan berkembang.</p>
+    </div>
+    <div class="footer-col"><h4>Navigasi</h4><ul><li><a href="index.html">Beranda</a></li><li><a href="artikel.html">Jurnal Artikel</a></li><li><a href="testimoni.html">Testimoni</a></li><li><a href="panduan.html">Panduan Bisnis</a></li></ul></div>
+    <div class="footer-col"><h4>Topik</h4><ul><li><a href="artikel.html">Literasi Keuangan</a></li><li><a href="artikel.html">Strategi Pemasaran</a></li><li><a href="#">Memulai Bisnis</a></li><li><a href="#">Legalitas Usaha</a></li></ul></div>
+    <div class="footer-col"><h4>Platform</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">Syarat &amp; Ketentuan</a></li><li><a href="#">Hubungi Kami</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 BisnisNet. Semua hak dilindungi.</span><span>Dibuat dengan ❤ untuk wirausahawan Indonesia</span></div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  const TOTAL = 7;
+  let doneSteps = new Set([0]); // step 0 done
+
+  function updateProgress() {
+    const pct = Math.round((doneSteps.size / TOTAL) * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('pct-lbl').textContent = pct + '%';
+    const el = document.querySelector('.qs-pct');
+    if (el) el.textContent = pct + '%';
+  }
+
+  function toggleStep(idx) {
+    const step = document.getElementById('step-' + idx);
+    step.classList.toggle('open');
+  }
+
+  function openStep(idx) {
+    const step = document.getElementById('step-' + idx);
+    if (!step.classList.contains('open')) step.classList.add('open');
+    step.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function markDone(idx) {
+    doneSteps.add(idx);
+    const step = document.getElementById('step-' + idx);
+    const numEl = step.querySelector('.step-num');
+    numEl.className = 'step-num done';
+    numEl.textContent = '✓';
+    const tagEl = step.querySelector('.step-tag');
+    tagEl.textContent = tagEl.textContent.replace('Belum Dimulai', 'Selesai').replace('Sedang Berjalan','Selesai');
+
+    // Update sidebar
+    const navItems = document.querySelectorAll('.panduan-nav-item');
+    if (navItems[idx]) {
+      navItems[idx].classList.remove('active');
+      navItems[idx].classList.add('done');
+      const dot = navItems[idx].querySelector('.panduan-nav-dot');
+      dot.style.background = '#1E8060'; dot.style.borderColor = '#1E8060';
+    }
+
+    updateProgress();
+    showToast('Modul ' + (idx+1) + ' selesai! Lanjutkan ke modul berikutnya.');
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>

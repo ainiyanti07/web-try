@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testimoni — BisnisNet</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem; margin-bottom: 3.5rem;
+}
+.stat-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 1.6rem 1.4rem;
+  text-align: center; box-shadow: var(--shadow-sm);
+}
+.stat-card-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem; font-weight: 700; color: var(--text-dark);
+  line-height: 1; margin-bottom: .35rem;
+}
+.stat-card-lbl { font-size: .78rem; color: var(--text-muted); letter-spacing: .3px; }
+.stat-card-accent { color: var(--gold); }
+
+/* ── FEATURED TESTIMONIAL ── */
+.testi-featured {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+  border-radius: var(--r-xl); padding: 3rem 3.5rem;
+  margin-bottom: 2.5rem; position: relative; overflow: hidden;
+}
+.testi-featured::before {
+  content: '\201C';
+  position: absolute; top: -1rem; left: 2.5rem;
+  font-family: 'Playfair Display', serif; font-size: 10rem; font-weight: 700;
+  color: rgba(198,146,60,.18); line-height: 1; pointer-events: none;
+}
+.testi-featured-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.45rem); font-style: italic; font-weight: 400;
+  color: rgba(255,255,255,.92); line-height: 1.6;
+  max-width: 680px; position: relative; margin-bottom: 2rem;
+}
+.testi-featured-author {
+  display: flex; align-items: center; gap: 1rem; position: relative;
+}
+.testi-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700;
+  flex-shrink: 0; background: var(--gold); color: var(--navy);
+}
+.testi-author-name { font-weight: 600; color: var(--white); font-size: .95rem; }
+.testi-author-role { font-size: .8rem; color: rgba(255,255,255,.5); margin-top: .15rem; }
+.testi-featured-stars { margin-left: auto; }
+.testi-featured-stars svg { width: 18px; height: 18px; fill: var(--gold); stroke: none; }
+
+/* ── MASONRY GRID ── */
+.testi-grid {
+  columns: 3; gap: 1.25rem;
+  column-fill: balance;
+}
+.testi-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 1.6rem 1.7rem;
+  margin-bottom: 1.25rem; break-inside: avoid;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.testi-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: transparent; }
+
+.testi-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.testi-card-author { display: flex; align-items: center; gap: .75rem; }
+.tc-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.tc-name { font-weight: 600; font-size: .9rem; color: var(--text-dark); }
+.tc-role { font-size: .77rem; color: var(--text-muted); margin-top: .1rem; }
+.tc-stars svg { width: 13px; height: 13px; fill: var(--gold); stroke: none; }
+
+.tc-quote {
+  font-size: .9rem; color: var(--text-mid); line-height: 1.65;
+  margin-bottom: 1rem;
+}
+.tc-footer { display: flex; align-items: center; justify-content: space-between; }
+.tc-date { font-size: .75rem; color: var(--text-muted); }
+.tc-tag { font-size: .7rem; font-weight: 600; padding: .2rem .65rem; border-radius: 99px; }
+
+/* Avatar colors */
+.av-gold   { background: var(--gold-pale); color: var(--gold-dim); }
+.av-green  { background: #EAF6F1; color: #1A6B4F; }
+.av-blue   { background: #EBF2FD; color: #1A4FA0; }
+.av-purple { background: #F4EDFC; color: #6A2D9B; }
+.av-red    { background: #FEECEB; color: #9B2828; }
+.av-teal   { background: #E4F6F4; color: #0F6E56; }
+
+/* Submit form */
+.submit-section {
+  background: var(--off); border-radius: var(--r-xl); padding: 3rem;
+  margin-top: 4rem; text-align: center;
+}
+.submit-section h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem; font-weight: 700; color: var(--text-dark);
+  margin-bottom: .5rem;
+}
+.submit-section p { color: var(--text-soft); font-size: .95rem; margin-bottom: 2rem; }
+.submit-form {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  max-width: 600px; margin: 0 auto; text-align: left;
+}
+.form-group { display: flex; flex-direction: column; gap: .4rem; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label { font-size: .8rem; font-weight: 600; color: var(--text-mid); letter-spacing: .2px; }
+.form-group input,
+.form-group textarea,
+.form-group select {
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm); padding: .65rem .9rem;
+  font-family: inherit; font-size: .875rem; color: var(--text-dark);
+  background: var(--white); outline: none;
+  transition: border-color var(--t) var(--ease);
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus { border-color: var(--gold); }
+.form-group textarea { resize: vertical; min-height: 100px; }
+.star-select { display: flex; gap: .35rem; margin-top: .2rem; }
+.star-sel {
+  font-size: 1.4rem; cursor: pointer; opacity: .35;
+  transition: opacity var(--t) var(--ease), transform var(--t) var(--ease);
+}
+.star-sel.active, .star-sel:hover { opacity: 1; transform: scale(1.15); }
+
+@media (max-width: 900px) { .testi-grid { columns: 2; } .stats-row { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 580px) {
+  .testi-grid { columns: 1; }
+  .testi-featured { padding: 2rem 1.75rem; }
+  .submit-form { grid-template-columns: 1fr; }
+  .submit-section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-mark"><svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      BisnisNet
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="artikel.html">Jurnal Artikel</a></li>
+      <li><a href="testimoni.html">Testimoni</a></li>
+      <li><a href="panduan.html">Panduan Bisnis</a></li>
+      <a href="panduan.html" class="nav-cta">Mulai Sekarang</a>
+    </ul>
+    <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <span class="t-label">Testimoni</span>
+  <h1>Kisah Nyata dari <em>Wirausahawan</em> Indonesia</h1>
+  <p>Dengarkan langsung pengalaman mereka yang telah memulai, mengembangkan, dan bertumbuh bersama BisnisNet.</p>
+</div>
+
+<section class="section-sm">
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <div class="stat-card-num stat-card-accent" data-count="2400" data-suffix="+">0</div>
+        <div class="stat-card-lbl">Wirausahawan Aktif</div>
+      </div>
+      <div class="stat-card reveal delay-1">
+        <div class="stat-card-num stat-card-accent" data-count="98" data-suffix="%">0</div>
+        <div class="stat-card-lbl">Rating Positif</div>
+      </div>
+      <div class="stat-card reveal delay-2">
+        <div class="stat-card-num stat-card-accent">4.9</div>
+        <div class="stat-card-lbl">Rating Rata-rata (dari 5)</div>
+      </div>
+      <div class="stat-card reveal delay-3">
+        <div class="stat-card-num stat-card-accent" data-count="380" data-suffix="+">0</div>
+        <div class="stat-card-lbl">Ulasan Terverifikasi</div>
+      </div>
+    </div>
+
+    <!-- Featured -->
+    <div class="testi-featured reveal">
+      <div class="testi-featured-text">
+        "BisnisNet benar-benar mengubah cara saya memandang bisnis. Artikel tentang cash flow management yang saya baca di sini menyelamatkan usaha kuliner saya di masa-masa sulit. Sekarang omzet kami tumbuh 3x lipat dalam 8 bulan."
+      </div>
+      <div class="testi-featured-author">
+        <div class="testi-avatar">DR</div>
+        <div>
+          <div class="testi-author-name">Dewi Rahayu</div>
+          <div class="testi-author-role">Pemilik Kedai Kopi Nusantara · Jakarta</div>
+        </div>
+        <div class="testi-featured-stars stars">
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="chip-bar reveal" style="margin-bottom:2rem;" id="chip-testi">
+      <button class="chip active" data-filter="all">Semua</button>
+      <button class="chip" data-filter="kuliner">Kuliner</button>
+      <button class="chip" data-filter="fashion">Fashion</button>
+      <button class="chip" data-filter="jasa">Jasa</button>
+      <button class="chip" data-filter="teknologi">Teknologi</button>
+      <button class="chip" data-filter="retail">Retail</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="testi-grid" id="testi-grid">
+
+      <div class="testi-card reveal" data-cat="jasa">
+        <div class="testi-card-head">
+          <div class="testi-card-author">
+            <div class="tc-avatar av-blue">BP</div>
+            <div>
+              <div class="tc-name">Budi Prasetyo</div>
+              <div class="tc-role">Konsultan IT · Surabaya</div>
+            </div>
+          </div>
+          <div class="tc-stars stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="tc-quote">"Panduan legalitas bisnis di sini sangat membantu. Saya akhirnya bisa mendaftarkan PT tanpa harus bayar konsultan mahal. Prosesnya jelas dan step-by-step."</div>
+        <div class="tc-footer"><span class="tc-date">Jan 2025</span><span class="tc-tag badge badge-blue">Jasa</span></div>
+      </div>
+
+      <div class="testi-card reveal delay-1" data-cat="fashion">
+        <div class="testi-card-head">
+          <div class="testi-card-author">
+            <div class="tc-avatar av-purple">SA</div>
+            <div>
+              <div class="tc-name">Siti Aminah</div>
+              <div class="tc-role">Brand Fashion Muslim · Bandung</div>
+            </div>
+          </div>
+          <div class="tc-stars stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="tc-quote">"Artikel tentang strategi TikTok Shop vs Instagram Shop benar-benar membuka mata saya. Setelah mengikuti saran di sana, konversi produk saya naik 40% dalam 2 bulan. Sangat direkomendasikan!"</div>
+        <div class="tc-footer"><span class="tc-date">Jan 2025</span><span class="tc-tag badge badge-purple">Fashion</span></div>
+      </div>
+
+      <div class="testi-card reveal delay-2" data-cat="teknologi">
+        <div class="testi-card-head">
+          <div class="testi-card-author">
+            <div class="tc-avatar av-teal">RF</div>
+            <div>
+              <div class="tc-name">Rizky Firmansyah</div>
+              <div class="tc-role">SaaS Startup · Jakarta</div>
+            </div>
+          </div>
+          <div class="tc-stars stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24" style="fill:var(--border);stroke:none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="tc-quote">"Panduan tentang financial modeling membantu saya menyiapkan deck investor yang lebih solid. Akhirnya berhasil closing seed round bulan ini."</div>
+        <div class="tc-footer"><span class="tc-date">Des 2024</span><span class="tc-tag badge badge-green">Teknologi</span></div>
+      </div>
+
+      <div class="testi-card reveal" data-cat="retail">
+        <div class="testi-card-head">
+          <div class="testi-card-author">
+            <div class="tc-avatar av-gold">MH</div>
+            <div>
+              <div class="tc-name">Maya Handayani</div>
+              <div class="tc-role">Toko Retail Online · Yogyakarta</div>
+            </div>
+          </div>
+          <div class="tc-stars stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="tc-quote">"Konten gratis di sini kualitasnya setara kursus berbayar yang pernah saya ikuti. Template business plan-nya langsung saya pakai untuk pengajuan KUR ke bank dan disetujui!"</div>
+        <div class="tc-footer"><span class="tc-date">Des 2024</span><span class="tc-tag badge badge-gold">Retail</span></div>
+      </div>
+
+      <div class="testi-card reveal delay-1" data-cat="kuliner">
+        <div class="testi-card-head">
+          <div class="testi-card-author">
+            <div class="tc-avatar av-red">AS</div>
+            <div>
+              <div class="tc-name">Ahmad Santoso</div>
+              <div class="tc-role">Franchise Makanan · Semarang</div>
+            </div>
+          </div>
+          <div class="tc-stars stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="tc-quote">"Saya sudah membuka 3 cabang dalam 18 bulan berkat panduan manajemen operasional yang ada di BisnisNet. SOP-nya sangat praktis dan bisa langsung diimplementasikan."</div>
+        <div class="tc-footer"><span class="tc-date">Nov 2024</span><span class="tc-tag badge badge-red">Kuliner</span></div>
+      </div>
+
+      <div class="testi-card reveal delay-2" data-cat="jasa">
+        <div class="testi-card-head">
+          <div class="testi-card-author">
+            <div class="tc-avatar av-green">LW</div>
+            <div>
+              <div class="tc-name">Linda Wijaya</div>
+              <div class="tc-role">Wedding Organizer · Bali</div>
+            </div>
+          </div>
+          <div class="tc-stars stars">
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+            <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          </div>
+        </div>
+        <div class="tc-quote">"Artikel motivasi di sini benar-benar menguatkan mental saya ketika bisnis sedang lesu pasca pandemi. Sekarang WO saya kembali di track dan bahkan lebih baik dari sebelumnya."</div>
+        <div class="tc-footer"><span class="tc-date">Nov 2024</span><span class="tc-tag badge badge-green">Jasa</span></div>
+      </div>
+
+    </div>
+
+    <!-- Submit form -->
+    <div class="submit-section reveal">
+      <h3>Bagikan Pengalaman Anda</h3>
+      <p>Cerita Anda bisa menginspirasi ribuan wirausahawan lainnya di seluruh Indonesia.</p>
+      <form class="submit-form" onsubmit="return handleSubmit(event)">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" placeholder="Ahmad Santoso">
+        </div>
+        <div class="form-group">
+          <label>Jenis Bisnis</label>
+          <select>
+            <option value="">Pilih kategori...</option>
+            <option>Kuliner</option>
+            <option>Fashion</option>
+            <option>Jasa</option>
+            <option>Teknologi</option>
+            <option>Retail</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Kota</label>
+          <input type="text" placeholder="Jakarta">
+        </div>
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="star-select" id="star-select">
+            <span class="star-sel" data-val="1">★</span>
+            <span class="star-sel" data-val="2">★</span>
+            <span class="star-sel" data-val="3">★</span>
+            <span class="star-sel" data-val="4">★</span>
+            <span class="star-sel" data-val="5">★</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>Cerita & Pengalaman Anda</label>
+          <textarea placeholder="Bagaimana BisnisNet membantu perjalanan bisnis Anda? Ceritakan dengan jujur..."></textarea>
+        </div>
+        <div class="form-group full" style="text-align:center;">
+          <button type="submit" class="btn btn-primary" style="justify-content:center;padding:.75rem 2rem;font-size:.95rem;">
+            Kirim Testimoni
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo"><div class="nav-logo-mark"><svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>BisnisNet</a>
+      <p>Platform edukasi bisnis dan keuangan untuk wirausahawan Indonesia yang ingin tumbuh dan berkembang.</p>
+    </div>
+    <div class="footer-col"><h4>Navigasi</h4><ul><li><a href="index.html">Beranda</a></li><li><a href="artikel.html">Jurnal Artikel</a></li><li><a href="testimoni.html">Testimoni</a></li><li><a href="panduan.html">Panduan Bisnis</a></li></ul></div>
+    <div class="footer-col"><h4>Topik</h4><ul><li><a href="artikel.html">Literasi Keuangan</a></li><li><a href="artikel.html">Strategi Pemasaran</a></li><li><a href="panduan.html">Memulai Bisnis</a></li><li><a href="#">Legalitas Usaha</a></li></ul></div>
+    <div class="footer-col"><h4>Platform</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">Syarat &amp; Ketentuan</a></li><li><a href="#">Hubungi Kami</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 BisnisNet. Semua hak dilindungi.</span><span>Dibuat dengan ❤ untuk wirausahawan Indonesia</span></div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  initChips('#chip-testi', '#testi-grid .testi-card', 'cat');
+
+  /* Star rating selector */
+  let selected = 0;
+  document.querySelectorAll('.star-sel').forEach(s => {
+    s.addEventListener('mouseenter', () => {
+      const v = +s.dataset.val;
+      document.querySelectorAll('.star-sel').forEach(x => x.classList.toggle('active', +x.dataset.val <= v));
+    });
+    s.addEventListener('mouseleave', () => {
+      document.querySelectorAll('.star-sel').forEach(x => x.classList.toggle('active', +x.dataset.val <= selected));
+    });
+    s.addEventListener('click', () => {
+      selected = +s.dataset.val;
+      document.querySelectorAll('.star-sel').forEach(x => x.classList.toggle('active', +x.dataset.val <= selected));
+    });
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    showToast('Terima kasih! Testimoni Anda sedang direview.');
+    e.target.reset();
+    selected = 0;
+    document.querySelectorAll('.star-sel').forEach(x => x.classList.remove('active'));
+    return false;
+  }
+</script>
+</body>
+</html>

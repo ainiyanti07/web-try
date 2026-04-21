@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jurnal Artikel — BisnisNet</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── ARTIKEL GRID ── */
+.artikel-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
+  align-items: start;
+}
+.main-area {}
+.sidebar {}
+
+/* Featured Article */
+.art-featured {
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 2rem;
+  display: grid; grid-template-columns: 1fr 1fr;
+  transition: box-shadow var(--t) var(--ease);
+}
+.art-featured:hover { box-shadow: var(--shadow-lg); }
+.art-featured-img {
+  background: linear-gradient(135deg, var(--navy) 0%, #2A4A80 100%);
+  min-height: 280px;
+  display: flex; align-items: flex-end; padding: 2rem;
+  position: relative; overflow: hidden;
+}
+.art-featured-img::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 30%, rgba(198,146,60,.25) 0%, transparent 60%);
+}
+.art-featured-img-label {
+  position: relative;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem; font-weight: 700; font-style: italic;
+  color: rgba(255,255,255,.12); line-height: 1;
+  user-select: none;
+}
+.art-featured-body { padding: 2rem 2.2rem; display: flex; flex-direction: column; justify-content: center; }
+.art-featured-badge { margin-bottom: .75rem; }
+.art-featured-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--text-dark); margin-bottom: .75rem; line-height: 1.3;
+}
+.art-featured-excerpt { font-size: .88rem; color: var(--text-soft); line-height: 1.65; margin-bottom: 1.2rem; }
+.art-meta { display: flex; align-items: center; gap: .5rem; font-size: .78rem; color: var(--text-muted); flex-wrap: wrap; }
+.art-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-mid); }
+
+/* Article list */
+.art-list { display: flex; flex-direction: column; gap: 1rem; }
+.art-item {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 1.4rem 1.6rem;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 1rem; align-items: center;
+  transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.art-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: transparent; }
+.art-item-left {}
+.art-item-top { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; }
+.art-item-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-bottom: .4rem; line-height: 1.3; }
+.art-item-excerpt { font-size: .83rem; color: var(--text-soft); line-height: 1.55; }
+.art-item-right { text-align: right; flex-shrink: 0; }
+.art-item-read { font-size: .75rem; color: var(--text-muted); white-space: nowrap; margin-bottom: .4rem; }
+.art-item-arrow {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--off); display: flex; align-items: center; justify-content: center;
+  margin-left: auto;
+  transition: background var(--t) var(--ease), transform var(--t) var(--ease);
+}
+.art-item:hover .art-item-arrow { background: var(--navy); transform: rotate(-45deg); }
+.art-item:hover .art-item-arrow svg { stroke: white; }
+
+/* Sidebar */
+.sidebar-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 1.6rem; margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+.sidebar-title { font-size: .72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.1rem; }
+.topic-list { display: flex; flex-direction: column; gap: .5rem; }
+.topic-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .65rem .8rem; border-radius: var(--r-sm);
+  background: var(--cream); cursor: pointer;
+  transition: background var(--t) var(--ease);
+  font-size: .875rem; color: var(--text-mid);
+}
+.topic-item:hover { background: var(--off); color: var(--text-dark); }
+.topic-count { font-size: .75rem; color: var(--text-muted); background: var(--border); padding: .15rem .55rem; border-radius: 99px; }
+
+.popular-list { display: flex; flex-direction: column; gap: .85rem; }
+.popular-item { display: flex; gap: .85rem; align-items: flex-start; cursor: pointer; }
+.popular-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--border-mid); line-height: 1; flex-shrink: 0; width: 28px; }
+.popular-title { font-size: .875rem; font-weight: 500; color: var(--text-dark); line-height: 1.4; transition: color var(--t) var(--ease); }
+.popular-item:hover .popular-title { color: var(--gold-dim); }
+.popular-date { font-size: .75rem; color: var(--text-muted); margin-top: .2rem; }
+
+/* Pagination */
+.pagination { display: flex; gap: .5rem; justify-content: center; margin-top: 2.5rem; flex-wrap: wrap; }
+.pg-btn {
+  width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r-sm); border: 1.5px solid var(--border);
+  font-size: .875rem; font-weight: 500; color: var(--text-soft);
+  cursor: pointer; transition: all var(--t) var(--ease); background: var(--white);
+}
+.pg-btn:hover { border-color: var(--navy); color: var(--navy); }
+.pg-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+
+@media (max-width: 900px) {
+  .artikel-layout { grid-template-columns: 1fr; }
+  .sidebar { order: -1; }
+  .art-featured { grid-template-columns: 1fr; }
+  .art-featured-img { min-height: 160px; }
+}
+@media (max-width: 580px) {
+  .art-item { grid-template-columns: 1fr; }
+  .art-item-right { display: flex; align-items: center; gap: .75rem; justify-content: space-between; }
+  .art-item-arrow { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-mark">
+        <svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      BisnisNet
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="artikel.html">Jurnal Artikel</a></li>
+      <li><a href="testimoni.html">Testimoni</a></li>
+      <li><a href="panduan.html">Panduan Bisnis</a></li>
+      <a href="panduan.html" class="nav-cta">Mulai Sekarang</a>
+    </ul>
+    <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <span class="t-label">Jurnal Artikel</span>
+  <h1>Wawasan yang <em>Menginspirasi</em> &amp; Terpercaya</h1>
+  <p>Artikel bisnis dan keuangan dari para ahli, dikurasi khusus untuk wirausahawan Indonesia yang ingin terus berkembang.</p>
+</div>
+
+<section class="section-sm">
+  <div class="container">
+
+    <!-- Filter chips -->
+    <div class="chip-bar reveal" style="margin-bottom: 2.5rem;" id="chip-bar">
+      <button class="chip active" data-filter="all">Semua</button>
+      <button class="chip" data-filter="motivasi">Motivasi</button>
+      <button class="chip" data-filter="keuangan">Keuangan</button>
+      <button class="chip" data-filter="pemasaran">Pemasaran</button>
+      <button class="chip" data-filter="manajemen">Manajemen</button>
+      <button class="chip" data-filter="hukum">Hukum & Pajak</button>
+    </div>
+
+    <div class="artikel-layout">
+
+      <!-- ── MAIN ── -->
+      <div class="main-area">
+
+        <!-- Featured -->
+        <div class="art-featured reveal" data-cat="motivasi">
+          <div class="art-featured-img">
+            <div class="art-featured-img-label">Insight</div>
+          </div>
+          <div class="art-featured-body">
+            <div class="art-featured-badge"><span class="badge badge-gold">⭐ Artikel Pilihan</span></div>
+            <div class="art-featured-title">Dari Warung Kelontong ke Brand Nasional: Perjalanan 10 Tahun Seorang Ibu Rumah Tangga</div>
+            <div class="art-featured-excerpt">Kisah transformasi luar biasa Sri Wahyuni yang membangun bisnis camilan rumahan menjadi merek yang hadir di 500+ minimarket nasional — dengan modal awal hanya Rp 500 ribu.</div>
+            <div class="art-meta">
+              <span>Rina Hartati</span>
+              <span class="art-meta-dot"></span>
+              <span>22 Jan 2025</span>
+              <span class="art-meta-dot"></span>
+              <span>12 mnt baca</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Article List -->
+        <div class="art-list" id="art-list">
+
+          <div class="art-item reveal delay-1" data-cat="keuangan">
+            <div class="art-item-left">
+              <div class="art-item-top">
+                <span class="badge badge-purple">Keuangan</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">20 Jan 2025</span>
+              </div>
+              <div class="art-item-title">Memahami Laporan Keuangan Bisnis: Panduan untuk Non-Akuntan</div>
+              <div class="art-item-excerpt">Neraca, laporan laba rugi, dan arus kas — tiga dokumen wajib yang harus dibaca setiap pengusaha untuk mengambil keputusan berbasis data.</div>
+            </div>
+            <div class="art-item-right">
+              <div class="art-item-read">9 mnt</div>
+              <div class="art-item-arrow">
+                <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="art-item reveal delay-2" data-cat="motivasi">
+            <div class="art-item-left">
+              <div class="art-item-top">
+                <span class="badge badge-green">Motivasi</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">18 Jan 2025</span>
+              </div>
+              <div class="art-item-title">7 Kebiasaan Pagi Pengusaha Sukses yang Bisa Anda Tiru Mulai Besok</div>
+              <div class="art-item-excerpt">Riset dari 200 CEO menunjukkan pola yang konsisten — bukan tentang bangun jam 4 pagi, tapi tentang ritual yang membangun fokus dan energi yang tepat.</div>
+            </div>
+            <div class="art-item-right">
+              <div class="art-item-read">6 mnt</div>
+              <div class="art-item-arrow">
+                <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="art-item reveal delay-1" data-cat="pemasaran">
+            <div class="art-item-left">
+              <div class="art-item-top">
+                <span class="badge badge-blue">Pemasaran</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">15 Jan 2025</span>
+              </div>
+              <div class="art-item-title">TikTok Shop vs Instagram Shop: Mana yang Lebih Efektif untuk UMKM 2025?</div>
+              <div class="art-item-excerpt">Perbandingan mendalam berdasarkan data konversi, biaya akuisisi pelanggan, dan jenis produk — dilengkapi rekomendasi strategi untuk setiap platform.</div>
+            </div>
+            <div class="art-item-right">
+              <div class="art-item-read">11 mnt</div>
+              <div class="art-item-arrow">
+                <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="art-item reveal delay-2" data-cat="hukum">
+            <div class="art-item-left">
+              <div class="art-item-top">
+                <span class="badge badge-red">Hukum & Pajak</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">12 Jan 2025</span>
+              </div>
+              <div class="art-item-title">Panduan Lengkap Pajak UMKM 2025: Perubahan yang Wajib Anda Ketahui</div>
+              <div class="art-item-excerpt">DJP resmi mengubah beberapa regulasi PPh final UMKM. Berikut ringkasan perubahan penting dan dampaknya pada kewajiban pajak bisnis kecil Anda.</div>
+            </div>
+            <div class="art-item-right">
+              <div class="art-item-read">14 mnt</div>
+              <div class="art-item-arrow">
+                <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="art-item reveal delay-1" data-cat="manajemen">
+            <div class="art-item-left">
+              <div class="art-item-top">
+                <span class="badge badge-gold">Manajemen</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">10 Jan 2025</span>
+              </div>
+              <div class="art-item-title">Cara Mendelegasikan Tugas agar Bisnis Bisa Jalan Tanpa Anda Harus Ada Setiap Saat</div>
+              <div class="art-item-excerpt">80% pengusaha UMKM terjebak menjadi "tukang" di bisnis sendiri. Pelajari sistem delegasi dan SOP yang membebaskan Anda untuk fokus pada pertumbuhan.</div>
+            </div>
+            <div class="art-item-right">
+              <div class="art-item-read">8 mnt</div>
+              <div class="art-item-arrow">
+                <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="art-item reveal delay-2" data-cat="keuangan">
+            <div class="art-item-left">
+              <div class="art-item-top">
+                <span class="badge badge-purple">Keuangan</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">8 Jan 2025</span>
+              </div>
+              <div class="art-item-title">Investasi untuk Pengusaha: Diversifikasi Portofolio agar Tidak Taruh Semua Telur dalam Satu Keranjang</div>
+              <div class="art-item-excerpt">Strategi diversifikasi khusus untuk pemilik bisnis — bagaimana menyeimbangkan reinvestasi ke bisnis dengan instrumen investasi eksternal yang aman.</div>
+            </div>
+            <div class="art-item-right">
+              <div class="art-item-read">10 mnt</div>
+              <div class="art-item-arrow">
+                <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="art-item reveal delay-1" data-cat="motivasi">
+            <div class="art-item-left">
+              <div class="art-item-top">
+                <span class="badge badge-green">Motivasi</span>
+                <span style="font-size:.75rem;color:var(--text-muted);">5 Jan 2025</span>
+              </div>
+              <div class="art-item-title">Bangkit dari Kebangkrutan: Bagaimana 3 Pengusaha Indonesia Memulai Kembali dari Nol</div>
+              <div class="art-item-excerpt">Kisah nyata dan pelajaran berharga dari pengusaha yang pernah kehilangan segalanya namun berhasil membangun kembali lebih kuat dari sebelumnya.</div>
+            </div>
+            <div class="art-item-right">
+              <div class="art-item-read">13 mnt</div>
+              <div class="art-item-arrow">
+                <svg width="14" height="14" fill="none" stroke="var(--text-soft)" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /art-list -->
+
+        <!-- Pagination -->
+        <div class="pagination reveal">
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+          <button class="pg-btn">4</button>
+          <button class="pg-btn" style="padding:0 .75rem;width:auto;">→</button>
+        </div>
+
+      </div><!-- /main-area -->
+
+      <!-- ── SIDEBAR ── -->
+      <aside class="sidebar">
+
+        <div class="sidebar-card reveal">
+          <div class="sidebar-title">Topik Populer</div>
+          <div class="topic-list">
+            <div class="topic-item"><span>💰 Literasi Keuangan</span><span class="topic-count">34</span></div>
+            <div class="topic-item"><span>📣 Pemasaran Digital</span><span class="topic-count">28</span></div>
+            <div class="topic-item"><span>🚀 Memulai Bisnis</span><span class="topic-count">22</span></div>
+            <div class="topic-item"><span>⚡ Motivasi & Mindset</span><span class="topic-count">19</span></div>
+            <div class="topic-item"><span>⚖️ Hukum & Pajak</span><span class="topic-count">14</span></div>
+            <div class="topic-item"><span>👥 SDM & Tim</span><span class="topic-count">11</span></div>
+          </div>
+        </div>
+
+        <div class="sidebar-card reveal delay-1">
+          <div class="sidebar-title">Artikel Terpopuler</div>
+          <div class="popular-list">
+            <div class="popular-item">
+              <div class="popular-num">01</div>
+              <div>
+                <div class="popular-title">Cara Membaca Neraca Keuangan untuk Pengusaha Pemula</div>
+                <div class="popular-date">3.2k views</div>
+              </div>
+            </div>
+            <div class="popular-item">
+              <div class="popular-num">02</div>
+              <div>
+                <div class="popular-title">10 Template Rencana Bisnis Gratis yang Bisa Langsung Dipakai</div>
+                <div class="popular-date">2.8k views</div>
+              </div>
+            </div>
+            <div class="popular-item">
+              <div class="popular-num">03</div>
+              <div>
+                <div class="popular-title">Strategi Pricing: Cara Menentukan Harga Jual yang Tepat</div>
+                <div class="popular-date">2.1k views</div>
+              </div>
+            </div>
+            <div class="popular-item">
+              <div class="popular-num">04</div>
+              <div>
+                <div class="popular-title">NIB vs SIUP: Apa Bedanya dan Mana yang Bisnis Anda Butuhkan?</div>
+                <div class="popular-date">1.9k views</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card reveal delay-2" style="background: var(--navy); border-color: transparent;">
+          <div style="font-size:.72rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.8rem;">Newsletter</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:.6rem;line-height:1.3;">Dapatkan Artikel Terbaru Setiap Minggu</div>
+          <div style="font-size:.83rem;color:rgba(255,255,255,.5);margin-bottom:1.2rem;line-height:1.6;">Kurang dari 5 menit membaca, langsung ke inbox Anda setiap Senin pagi.</div>
+          <input type="email" placeholder="email@anda.com" style="width:100%;margin-bottom:.75rem;border-radius:var(--r-sm);padding:.6rem .9rem;font-family:inherit;font-size:.875rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;outline:none;">
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="showToast('Berhasil! Cek email untuk konfirmasi.')">Langganan Gratis</button>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark"><svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        BisnisNet
+      </a>
+      <p>Platform edukasi bisnis dan keuangan untuk wirausahawan Indonesia yang ingin tumbuh dan berkembang.</p>
+    </div>
+    <div class="footer-col"><h4>Navigasi</h4><ul><li><a href="index.html">Beranda</a></li><li><a href="artikel.html">Jurnal Artikel</a></li><li><a href="testimoni.html">Testimoni</a></li><li><a href="panduan.html">Panduan Bisnis</a></li></ul></div>
+    <div class="footer-col"><h4>Topik</h4><ul><li><a href="#">Literasi Keuangan</a></li><li><a href="#">Strategi Pemasaran</a></li><li><a href="panduan.html">Memulai Bisnis</a></li><li><a href="#">Legalitas Usaha</a></li></ul></div>
+    <div class="footer-col"><h4>Platform</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">Syarat &amp; Ketentuan</a></li><li><a href="#">Hubungi Kami</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 BisnisNet. Semua hak dilindungi.</span>
+    <span>Dibuat dengan ❤ untuk wirausahawan Indonesia</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+  initChips('#chip-bar', '#art-list .art-item', 'cat');
+  document.querySelectorAll('.pg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
